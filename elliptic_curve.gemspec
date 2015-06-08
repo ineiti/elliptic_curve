@@ -13,7 +13,8 @@ Gem::Specification.new do |spec|
                           elliptic curves. }
   spec.description = %q{This gives the basic for representing elliptic curves of the form
 y^2 = x^3 + ax + b, including adding and (p^-1 modulo q).}
-  spec.homepage = "http://github.com/ineiti/elliptic_curve"
+  spec.homepage = 'http://github.com/ineiti/elliptic_curve'
+  spec.license = 'GPL-3.0'
 
 
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
