@@ -26,10 +26,10 @@ You can define elliptic curves using the EllitpicCurve::EC-class:
 ec = EllipticCurve::EC.new( 1, 2, 11 )
 ```
 
-which would create an elliptic curve of the following form:
+which would create an elliptic curve in F_11 of the following form:
 
 ```
-y^2 mod 11 = (x^3 + 1 * x + 2) mod 11
+y^2 = x^3 + 1 * x + 2
 ```
 
 Then you can define a point on this curve:
