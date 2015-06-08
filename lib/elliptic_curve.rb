@@ -15,13 +15,6 @@ module EllipticCurve
       @a, @b, @p = a, b, p
     end
 
-    # gets the positive y-value for a given x
-    # returns Float::INFINITY for Float::INFINITY
-    def get_y(x)
-      x < -@b and raise 'Undefined value'
-      x != Float::INFINITY ? Math.sqrt(x**3 + @a * x + @b) : Float::INFINITY
-    end
-
     # gets the inverse modulo p
     # Copied from http://en.wikipedia.org/wiki/Extended_Euclidean_algorithm#Modular_integers
     def get_inv_p(s)
@@ -49,11 +42,10 @@ module EllipticCurve
     attr_reader :ec, :x, :y
 
     # ec: the elliptic curve
-    # x, y: coordinates - if y is not given, it is calculated on the positive axis
+    # x, y: coordinates
     # if x == Float::INFINITY, y is ignored
-    def initialize(ec, x, y = nil)
-      @ec, @x = ec, x
-      @y = y ? y : @ec.get_y(@x)
+    def initialize(ec, x, y)
+      @ec, @x, @y = ec, x, y
     end
 
     # returns whether x is Float::INFINITY, ignores y
@@ -69,7 +61,7 @@ module EllipticCurve
         return p2
       elsif @x == p2.x
         if @y == -p2.y
-          return P.new(ec, Float::INFINITY)
+          return P.new(ec, Float::INFINITY, Float::INFINITY)
         else
           k = (3 * @x**2+@ec.a) * @ec.get_inv_p(2 * @y)
           x = (k**2 - 2 * @x) % @ec.p
@@ -85,6 +77,11 @@ module EllipticCurve
     # Multiplies itself by d
     def *(d)
       ([self] * d).inject(:+)
+    end
+
+    # Compare with another point
+    def ==(o)
+      @x == o.x && @y == o.y
     end
   end
 end
