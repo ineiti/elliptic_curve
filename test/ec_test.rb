@@ -37,4 +37,14 @@ class ECTest < Test::Unit::TestCase
 
     assert_equal(p3, p1 * 3)
   end
+
+  # Test infinity-cases
+  def test_infinity
+    ec = EC.new(1, 2, 11)
+    p_inf = P.new(ec, Float::INFINITY, Float::INFINITY)
+    p_normal = P.new(ec, 4, 2)
+    assert_equal p_normal, p_inf + p_normal
+    assert_equal p_normal, p_normal + p_inf
+    assert_equal p_inf, p_inf + p_inf
+  end
 end
