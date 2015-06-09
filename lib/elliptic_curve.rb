@@ -35,6 +35,28 @@ module EllipticCurve
         return t
       end
     end
+
+    # Adds two points together - searches the third point on a line between the two
+    # points
+    def add(p1, p2)
+      if p2.is_infinity?
+        return p1
+      elsif p1.is_infinity?
+        return p2
+      elsif p1.x == p2.x
+        if p1.y == -p2.y
+          return P.new(ec, Float::INFINITY, Float::INFINITY)
+        else
+          k = (3 * p1.x**2+@a) * get_inv_p(2 * p1.y)
+          x = (k**2 - 2 * p1.x) % @p
+          return P.new(self, x, (k*(p1.x-x)-p1.y) % @p)
+        end
+      else
+        k = (p2.y-p1.y) * get_inv_p(p2.x-p1.x)
+        x = (k**2-p1.x-p2.x) % @p
+        return P.new(self, x, (k * (p1.x-x)-p1.y) % @p)
+      end
+    end
   end
 
   # A point on an elliptic curve
@@ -55,23 +77,7 @@ module EllipticCurve
 
     # Adds p2 to self
     def +(p2)
-      if p2.is_infinity?
-        return self
-      elsif is_infinity?
-        return p2
-      elsif @x == p2.x
-        if @y == -p2.y
-          return P.new(ec, Float::INFINITY, Float::INFINITY)
-        else
-          k = (3 * @x**2+@ec.a) * @ec.get_inv_p(2 * @y)
-          x = (k**2 - 2 * @x) % @ec.p
-          return P.new(@ec, x, (k*(@x-x)-@y) % @ec.p)
-        end
-      else
-        k = (p2.y-@y) * @ec.get_inv_p(p2.x-@x)
-        x = (k**2-@x-p2.x) % @ec.p
-        return P.new(@ec, x, (k * (@x-x)-@y) % @ec.p)
-      end
+      @ec.add(self, p2)
     end
 
     # Multiplies itself by d
